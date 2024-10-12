@@ -1,4 +1,4 @@
-name: DiT
+name: DiT-faster-diffusion
 channels:
   - pytorch
   - nvidia
