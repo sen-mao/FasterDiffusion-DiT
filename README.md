@@ -38,9 +38,9 @@ conda activate DiT-faster-diffusion
 | Model                  | Dataset | Resolution | FID&darr; | sFID&darr; | IS&uarr; | Precision&uarr; | Recall&uarr; | s/image&darr; |
 |------------------------|:--------:|:----------:|:---------:|:----------:|:--------:|:---------------:|:------------:|:-------------:|
 | DiT                    | ImageNet |  256x256   |   2.27    |    4.60    |  278.24  |      0.83       |     0.57     |     5.13      |
-| DiT w/ FasterDiffusion | ImageNet |  256x256   |   2.31    |    4.55    |  276.05  |      0.82       |     0.57     |     3.26      |
+| DiT w/ FasterDiffusion | ImageNet |  256x256   |   2.31    |    4.55    |  276.05  |      0.82       |     0.57     |     **3.26**      |
 | DiT                    | ImageNet |  512x512   |   3.04    |    5.02    |  240.82  |      0.84       |     0.54     |     26.25     |
-| DiT w/ FasterDiffusion | ImageNet |  521x512   |   3.25    |    5.05    |  245.13  |      0.83       |     0.51     |     17.35     |
+| DiT w/ FasterDiffusion | ImageNet |  521x512   |   3.25    |    5.05    |  245.13  |      0.83       |     0.51     |     **17.35**     |
 
 
 # Visualization
