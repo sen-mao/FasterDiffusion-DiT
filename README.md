@@ -93,7 +93,7 @@ BATCH_SIZE=16
 
 echo 'DiT:'
 MODEL_FLAGS="--model DiT-XL/2 --per-proc-batch-size 64 --num-fid-samples 50000 --image-size 256 --only-DiT True"
-torchrun --nnodes=1 --nproc_per_node=$NUM_GPUS sample_ddp_fasterdiffusion.py  $MODEL_FLAGS --per-proc-batch-size $BATCH_SIZE
+torchrun --nnodes=1 --nproc_per_node=$NUM_GPUS sample_ddp_fasterdiffusion.py  $MODEL_FLAGS
 python evaluations/evaluator.py evaluations/VIRTUAL_imagenet256_labeled.npz samples/DiT-XL-2-samples-50000.npz
 # Inception Score: 275.85888671875
 # FID: 2.2854618308181784
