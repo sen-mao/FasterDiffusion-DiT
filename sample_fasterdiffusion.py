@@ -41,11 +41,10 @@ def main(args):
     model.load_state_dict(state_dict)
     model.eval()  # important!
     diffusion = create_diffusion(str(args.num_sampling_steps))
-    vae = AutoencoderKL.from_pretrained(f"/data/stabilityai/sd-vae-ft-{args.vae}").to(device)
+    vae = AutoencoderKL.from_pretrained(f"stabilityai/sd-vae-ft-{args.vae}").to(device)
 
     # Labels to condition the model with (feel free to change):
     class_labels = [207, 360, 387, 974, 88, 979, 417, 279]
-    # class_labels = [301]
 
     ## For fasterdiffusion
     diffusion.register_store = {'se_step': False, 'mid_feature': None,
@@ -54,10 +53,7 @@ def main(args):
                                 'bs': len(class_labels), 'tqdm_disable': False, 'noise_injection': True}
 
     diffusion.register_store['key_time_steps'] = \
-        [0, 10, 11, 12, 13, 14, 25, 26, 27, 28, 29, 40, 41, 42, 43, 44, 55, 56, 57, 58, 59, 70, 71, 72, 73, 74, 85, 86, 87, 88, 89, 100, 101, 102, 103, 104, 115, 116, 117, 118, 119, 130, 131, 132, 133, 134, 145, 146, 147, 148, 149, 160, 161, 162, 163, 164, 175, 176, 177, 178, 179, 190, 191, 192, 193, 194, 205, 206, 207, 208, 209, 220, 221, 222, 223, 224, 235, 236, 237, 238, 239, 249, 250]
-        # list(set(diffusion.register_store['key_time_steps']) - set([i for i in range(1, 235) if i % 10 < 5]))
-        # list(set(diffusion.register_store['key_time_steps']) - set([i for i in range(1, 249) if i % 15 < 10]))
-    # list(set(diffusion.register_store['key_time_steps']) - set([i for i in range(1, 230) if i % 10 < 5]))
+        list(set(diffusion.register_store['key_time_steps']) - set([i for i in range(1, 249) if i % 15 < 10]))
 
     # DiT w/o fasterdiffusion
     if args.only_DiT:
@@ -94,7 +90,7 @@ def main(args):
         model.forward_with_cfg, z.shape, z, clip_denoised=False, model_kwargs=model_kwargs, progress=not diffusion.register_store['tqdm_disable'], device=device
     )
     use_time = time.time() - start_time
-    print("DiT with FasterDiffusion: {:.2f} seconds/image".format(use_time/len(class_labels)))
+    print(f"DiT {'' if args.only_DiT else '(FasterDiffusion)'}: {use_time / len(class_labels):.2f} seconds/image")
 
     samples, _ = samples.chunk(2, dim=0)  # Remove null class samples
     samples = vae.decode(samples / 0.18215).sample
