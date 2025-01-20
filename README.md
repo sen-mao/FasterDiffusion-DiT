@@ -32,10 +32,10 @@ conda activate DiT-FasterDiffusion
 
 ## Performance
 
-| DiT Model                                                                               | Dataset | Resolution | FID&darr; | sFID&darr; | IS&uarr; | Precision&uarr; | Recall&uarr; | s/image&darr; |
-|-----------------------------------------------------------------------------------------|:--------:|:----------:|:---------:|:----------:|:--------:|:---------------:|:------------:|:-------------:|
-| [XL/2](https://dl.fbaipublicfiles.com/DiT/models/DiT-XL-2-256x256.pt)                   | ImageNet |  256x256   |   2.27    |    4.60    |  278.24  |      0.83       |     0.57     |     5.13      |
-| [XL/2](https://dl.fbaipublicfiles.com/DiT/models/DiT-XL-2-256x256.pt) (FasterDiffusion) | ImageNet |  256x256   |   2.31    |    4.55    |  276.05  |      0.82       |     0.57     |     3.26      |
+| DiT Model                                                                               | Resolution | FID&darr; | sFID&darr; | IS&uarr; | Precision&uarr; | Recall&uarr; | s/image&darr; |
+|-----------------------------------------------------------------------------------------|:----------:|:---------:|:----------:|:--------:|:---------------:|:------------:|:-------------:|
+| [XL/2](https://dl.fbaipublicfiles.com/DiT/models/DiT-XL-2-256x256.pt)                   |  256x256   |   2.27    |    4.60    |  278.24  |      0.83       |     0.57     |     5.13      |
+| [XL/2](https://dl.fbaipublicfiles.com/DiT/models/DiT-XL-2-256x256.pt) (FasterDiffusion) |  256x256   |   2.31    |    4.55    |  276.05  |      0.82       |     0.57     |     3.26      |
 
 
 # DiT-XL/2-G
