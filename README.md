@@ -56,6 +56,8 @@ Warming up GPU...
 DiT: 5.11 seconds/image
 ```
 
+</details>
+
 ### Run the `sample_fasterdiffusion.py` to generate images with FasterDiffusion.
 ```bash
 python sample_fasterdiffusion.py 
@@ -71,6 +73,8 @@ Warming up GPU...
 100%|█████████████████████████████████████████| 250/250 [00:40<00:00,  6.16it/s]
 DiT: 5.11 seconds/image
 ```
+
+</details>
 
 # Evaluation
 
