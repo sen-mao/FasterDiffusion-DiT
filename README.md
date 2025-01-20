@@ -77,8 +77,28 @@ DiT: 5.11 seconds/image
 </details>
 
 # Evaluation
+DiT provides a script for evaluation [sample_ddp.py](https://github.com/facebookresearch/DiT/blob/main/sample_ddp.py).
+The evaluation code is modified from this code, and the 50k sampling results are saved in the same data format as [ADM](https://github.com/openai/guided-diffusion/blob/main/scripts/classifier_sample.py).
+The evaluation code is obtained from [ADM's TensorFlow evaluation suite](https://github.com/openai/guided-diffusion/tree/main/evaluations), and the evaluation environment is already included in the ldm-faster-diffusion environment.
 
+```bash
+#!/bin/bash
 
+export NCCL_P2P_DISABLE=1
+
+NUM_GPUS=8
+BATCH_SIZE=16
+
+echo 'DiT (FasterDiffusion):'
+MODEL_FLAGS="--model DiT-XL/2 --num-fid-samples 50000 --image-size 256 --only-DiT False"
+torchrun --nnodes=1 --nproc_per_node=$NUM_GPUS sample_ddp_fasterdiffusion.py $MODEL_FLAGS --per-proc-batch-size $BATCH_SIZE
+python evaluations/evaluator.py evaluations/VIRTUAL_imagenet256_labeled.npz samples/DiT-XL-2-samples-50000.npz
+# Inception Score: 276.0558166503906
+# FID: 2.311326059070666
+# sFID: 4.552778228460056
+# Precision: 0.82654
+# Recall: 0.5764
+```
 
 
 ## BibTeX
