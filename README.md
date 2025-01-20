@@ -18,7 +18,7 @@ First, download and set up the repo:
 
 ```bash
 git clone https://github.com/sen-mao/DiT-FasterDiffusion.git
-cd DiT
+cd DiT-FasterDiffusion
 ```
 
 A suitable conda environment named `DiT-FasterDiffusion` can be created

@@ -41,7 +41,7 @@ def main(args):
     model.load_state_dict(state_dict)
     model.eval()  # important!
     diffusion = create_diffusion(str(args.num_sampling_steps))
-    vae = AutoencoderKL.from_pretrained(f"stabilityai/sd-vae-ft-{args.vae}").to(device)
+    vae = AutoencoderKL.from_pretrained(f"/data/stabilityai/sd-vae-ft-{args.vae}").to(device)
 
     # Labels to condition the model with (feel free to change):
     class_labels = [207, 360, 387, 974, 88, 979, 417, 279]
