@@ -41,7 +41,7 @@ def main(args):
     model.load_state_dict(state_dict)
     model.eval()  # important!
     diffusion = create_diffusion(str(args.num_sampling_steps))
-    vae = AutoencoderKL.from_pretrained(f"/data/stabilityai/sd-vae-ft-{args.vae}").to(device)
+    vae = AutoencoderKL.from_pretrained(f"stabilityai/sd-vae-ft-{args.vae}").to(device)
 
     # Labels to condition the model with (feel free to change):
     class_labels = [207, 360, 387, 974, 88, 979, 417, 279]
@@ -53,8 +53,7 @@ def main(args):
                                 'bs': len(class_labels), 'tqdm_disable': False, 'noise_injection': True}
 
     diffusion.register_store['key_time_steps'] = \
-        list(set(diffusion.register_store['key_time_steps']) - set([i for i in range(1, 230) if i % 10 < 5]))
-        # list(set(diffusion.register_store['key_time_steps']) - set([i for i in range(1, 249) if i % 15 < 10]))
+        list(set(diffusion.register_store['key_time_steps']) - set([i for i in range(1, 230) if i % 10 < 6]))
 
     # DiT w/o fasterdiffusion
     if args.only_DiT:
@@ -64,7 +63,7 @@ def main(args):
 
     # Create sampling noise:
     n = len(class_labels)
-    torch.manual_seed(2)
+    torch.manual_seed(3407)
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
     z = torch.randn(n, 4, latent_size, latent_size, device=device)
