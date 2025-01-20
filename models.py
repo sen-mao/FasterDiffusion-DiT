@@ -230,6 +230,13 @@ class DiT(nn.Module):
         imgs = x.reshape(shape=(x.shape[0], c, h * p, h * p))
         return imgs
 
+    def warpped_feature(self, sample, step):
+        c, h, w = sample.size()
+        uncond, cond = sample.chunk(2)
+        sample_expand = torch.cat([uncond.repeat(step, 1, 1, 1), cond.repeat(step, 1, 1, 1)])
+        sample_expand = sample_expand.contiguous().view(-1, h, w)
+        return sample_expand
+
     def forward(self, x, t, y):
         """
         Forward pass of DiT.
@@ -241,16 +248,38 @@ class DiT(nn.Module):
         t = self.t_embedder(t)                   # (N, D)
         y = self.y_embedder(y, self.training)    # (N, D)
         c = t + y                                # (N, D)
-        for block in self.blocks:
+
+        """ -------------------- share encoder -------------------- """
+        if self.register_store['se_step'] == False:  # do not share encoder step (i.e., key time-steps)
+            for block in self.blocks[:18]:  # Encoder
+                x = block(x, c)                      # (N, T, D)
+            self.register_store['mid_feature'] = x.detach().clone()
+            if self.register_store['use_parallel']:
+                # parallel features
+                parallel_steps = len(self.register_store['indexs'])
+                x = self.warpped_feature(self.register_store['mid_feature'], parallel_steps)  # latent code
+                y = y.repeat(parallel_steps, 1)  # label embedding
+
+                # parallel timesteps
+                step = torch.from_numpy(np.array(self.register_store['steps']))
+                self.register_store['ts_parallel'] = torch.flatten(torch.unsqueeze(step, 1).repeat(1, self.register_store['bs']).repeat(2, 1)).to(x.device)
+                t_emb = self.t_embedder(self.register_store['ts_parallel'])
+                c = t_emb + y
+        else:
+            # use stored encoder features
+            x = self.register_store['mid_feature'].detach().clone()
+
+        for block in self.blocks[18:]:  # Decoder
             x = block(x, c)                      # (N, T, D)
         x = self.final_layer(x, c)                # (N, T, patch_size ** 2 * out_channels)
         x = self.unpatchify(x)                   # (N, out_channels, H, W)
         return x
 
-    def forward_with_cfg(self, x, t, y, cfg_scale):
+    def forward_with_cfg(self, x, t, y, cfg_scale, register_store):
         """
         Forward pass of DiT, but also batches the unconditional forward pass for classifier-free guidance.
         """
+        self.register_store = register_store
         # https://github.com/openai/glide-text2im/blob/main/notebooks/text2im.ipynb
         half = x[: len(x) // 2]
         combined = torch.cat([half, half], dim=0)

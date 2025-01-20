@@ -14,6 +14,7 @@ import enum
 from .diffusion_utils import discretized_gaussian_log_likelihood, normal_kl
 
 
+
 def mean_flat(tensor):
     """
     Take the mean over all non-batch dimensions.
