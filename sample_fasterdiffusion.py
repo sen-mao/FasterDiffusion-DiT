@@ -16,10 +16,7 @@ from diffusers.models import AutoencoderKL
 from download import find_model
 from models import DiT_models
 import argparse
-
-# torch.manual_seed(42)
-# torch.backends.cudnn.deterministic = True
-# torch.backends.cudnn.benchmark = False
+import time
 
 def main(args):
     # Setup PyTorch:
@@ -44,27 +41,29 @@ def main(args):
     model.load_state_dict(state_dict)
     model.eval()  # important!
     diffusion = create_diffusion(str(args.num_sampling_steps))
-    vae = AutoencoderKL.from_pretrained(f"stabilityai/sd-vae-ft-{args.vae}").to(device)
+    vae = AutoencoderKL.from_pretrained(f"/data/stabilityai/sd-vae-ft-{args.vae}").to(device)
 
     # Labels to condition the model with (feel free to change):
     class_labels = [207, 360, 387, 974, 88, 979, 417, 279]
     # class_labels = [301]
 
-    # For fasterdiffusion
+    ## For fasterdiffusion
     diffusion.register_store = {'se_step': False, 'mid_feature': None,
                                 'key_time_steps': list(range(args.num_sampling_steps+1)),
                                 'init_img': None, 'use_parallel': False, 'ts_parallel': None, 'steps': [0],
                                 'bs': len(class_labels), 'tqdm_disable': False, 'noise_injection': True}
 
     diffusion.register_store['key_time_steps'] = \
-        list(set(diffusion.register_store['key_time_steps']) - set([i for i in range(1, 230) if i % 10 < 5]))
-        # tuple(set(diffusion.register_store['key_time_steps']) - set([i for i in range(1, 249) if i % 15 < 10]))
+        [0, 10, 11, 12, 13, 14, 25, 26, 27, 28, 29, 40, 41, 42, 43, 44, 55, 56, 57, 58, 59, 70, 71, 72, 73, 74, 85, 86, 87, 88, 89, 100, 101, 102, 103, 104, 115, 116, 117, 118, 119, 130, 131, 132, 133, 134, 145, 146, 147, 148, 149, 160, 161, 162, 163, 164, 175, 176, 177, 178, 179, 190, 191, 192, 193, 194, 205, 206, 207, 208, 209, 220, 221, 222, 223, 224, 235, 236, 237, 238, 239, 249, 250]
+        # list(set(diffusion.register_store['key_time_steps']) - set([i for i in range(1, 235) if i % 10 < 5]))
+        # list(set(diffusion.register_store['key_time_steps']) - set([i for i in range(1, 249) if i % 15 < 10]))
+    # list(set(diffusion.register_store['key_time_steps']) - set([i for i in range(1, 230) if i % 10 < 5]))
 
     # DiT w/o fasterdiffusion
     if args.only_DiT:
         diffusion.register_store['key_time_steps'] = list(range(args.num_sampling_steps+1))
 
-    print(diffusion.register_store['key_time_steps'])
+    print('key time-steps =', diffusion.register_store['key_time_steps'])
 
     # Create sampling noise:
     n = len(class_labels)
@@ -80,10 +79,22 @@ def main(args):
     y = torch.cat([y, y_null], 0)
     model_kwargs = dict(y=y, cfg_scale=args.cfg_scale)
 
+    # Warmup GPU. Only for testing the speed.
+    print("Warming up GPU...")
+    for _ in range(2):
+        _ = diffusion.p_sample_loop(
+            model.forward_with_cfg, z.shape, z, clip_denoised=False, model_kwargs=model_kwargs,
+            progress=not diffusion.register_store['tqdm_disable'], device=device
+        )
+
     # Sample images:
+    diffusion.register_store['tqdm_disable'] = True  # if one wants to disable `tqdm`
+    start_time = time.time()
     samples = diffusion.p_sample_loop(
         model.forward_with_cfg, z.shape, z, clip_denoised=False, model_kwargs=model_kwargs, progress=not diffusion.register_store['tqdm_disable'], device=device
     )
+    use_time = time.time() - start_time
+    print("DiT with FasterDiffusion: {:.2f} seconds/image".format(use_time/len(class_labels)))
 
     samples, _ = samples.chunk(2, dim=0)  # Remove null class samples
     samples = vae.decode(samples / 0.18215).sample
