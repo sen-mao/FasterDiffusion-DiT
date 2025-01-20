@@ -17,7 +17,7 @@ Results of DiT (top) and this method in conjunction with our proposed approach (
 First, download and set up the repo:
 
 ```bash
-git clone https://github.com/sen-mao/DiT.git
+git clone https://github.com/sen-mao/DiT-FasterDiffusion.git
 cd DiT
 ```
 
