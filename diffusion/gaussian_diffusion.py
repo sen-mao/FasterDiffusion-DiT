@@ -5,6 +5,7 @@
 
 
 import math
+import torch
 
 import numpy as np
 import torch as th
@@ -273,6 +274,7 @@ class GaussianDiffusion:
         """
         if model_kwargs is None:
             model_kwargs = {}
+        model_kwargs['register_store'] = self.register_store
 
         B, C = x.shape[:2]
         assert t.shape == (B,)
@@ -282,11 +284,14 @@ class GaussianDiffusion:
         else:
             extra = None
 
+        if self.register_store['use_parallel']:
+            indexs = torch.from_numpy(np.array(self.register_store['indexs']))
+            t = torch.flatten(torch.unsqueeze(indexs, 1).repeat(1, self.register_store['bs']).repeat(2, 1)).to(x.device)
         if self.model_var_type in [ModelVarType.LEARNED, ModelVarType.LEARNED_RANGE]:
-            assert model_output.shape == (B, C * 2, *x.shape[2:])
+            assert model_output.shape == (B*len(self.register_store['steps']), C * 2, *x.shape[2:])
             model_output, model_var_values = th.split(model_output, C, dim=1)
-            min_log = _extract_into_tensor(self.posterior_log_variance_clipped, t, x.shape)
-            max_log = _extract_into_tensor(np.log(self.betas), t, x.shape)
+            min_log = _extract_into_tensor(self.posterior_log_variance_clipped, t, model_output.shape)  # TODO: x.shape -> model_output.shape for fasterdiffusion
+            max_log = _extract_into_tensor(np.log(self.betas), t, model_output.shape)  # TODO: x.shape -> model_output.shape for fasterdiffusion
             # The model_var_values is [-1, 1] for [min_var, max_var].
             frac = (model_var_values + 1) / 2
             model_log_variance = frac * max_log + (1 - frac) * min_log
@@ -314,13 +319,45 @@ class GaussianDiffusion:
                 return x.clamp(-1, 1)
             return x
 
-        if self.model_mean_type == ModelMeanType.START_X:
-            pred_xstart = process_xstart(model_output)
+        if not self.register_store['use_parallel']:  # for share encoder
+            if self.model_mean_type == ModelMeanType.START_X:
+                pred_xstart = process_xstart(model_output)
+            else:
+                pred_xstart = process_xstart(
+                    self._predict_xstart_from_eps(x_t=x, t=t, eps=model_output)
+                )
+            model_mean, _, _ = self.q_posterior_mean_variance(x_start=pred_xstart, x_t=x, t=t)
         else:
-            pred_xstart = process_xstart(
-                self._predict_xstart_from_eps(x_t=x, t=t, eps=model_output)
-            )
-        model_mean, _, _ = self.q_posterior_mean_variance(x_start=pred_xstart, x_t=x, t=t)
+            indexs = self.register_store['indexs']
+            steps = self.register_store['steps']
+            b = self.register_store['bs']
+            l = int(t.shape[0] / 2)
+            for i, (index, step) in enumerate(zip(indexs, steps)):
+                curr_model_output = torch.cat([model_output[i * b:(i + 1) * b], model_output[l+i * b:l+(i + 1) * b]])
+                curr_t = torch.cat([t[i * b:(i + 1) * b], t[l+i * b:l+(i + 1) * b]])
+                if self.model_mean_type == ModelMeanType.START_X:
+                    pred_xstart = process_xstart(model_output)
+                else:
+                    pred_xstart = process_xstart(
+                        self._predict_xstart_from_eps(x_t=x, t=curr_t, eps=curr_model_output)
+                    )
+                model_mean, _, _ = self.q_posterior_mean_variance(x_start=pred_xstart, x_t=x, t=curr_t)
+
+                curr_model_log_variance = torch.cat([model_log_variance[i * b:(i + 1) * b], model_log_variance[l+i * b:l+(i + 1) * b]])
+
+                noise = th.randn_like(x)
+                nonzero_mask = (
+                    (curr_t != 0).float().view(-1, *([1] * (len(x.shape) - 1)))
+                )  # no noise when t == 0
+                # if cond_fn is not None:
+                #     out["mean"] = self.condition_mean(cond_fn, out, x, t, model_kwargs=model_kwargs)
+                x = model_mean + nonzero_mask * th.exp(0.5 * curr_model_log_variance) * noise
+
+                # Prior noise injection
+                if step / 1000 < 0.3 and self.register_store['noise_injection']:  # TODO: for encoder shared
+                    x = x + 0.003 * self.register_store['init_img']
+
+            model_log_variance = curr_model_log_variance
 
         assert model_mean.shape == model_log_variance.shape == pred_xstart.shape == x.shape
         return {
@@ -332,7 +369,7 @@ class GaussianDiffusion:
         }
 
     def _predict_xstart_from_eps(self, x_t, t, eps):
-        assert x_t.shape == eps.shape
+        # assert x_t.shape == eps.shape
         return (
             _extract_into_tensor(self.sqrt_recip_alphas_cumprod, t, x_t.shape) * x_t
             - _extract_into_tensor(self.sqrt_recipm1_alphas_cumprod, t, x_t.shape) * eps
@@ -489,15 +526,30 @@ class GaussianDiffusion:
             img = th.randn(*shape, device=device)
         indices = list(range(self.num_timesteps))[::-1]
 
+        self.register_store['init_img'] = img.detach().clone()  # TODO: for encoder shared
+
         if progress:
             # Lazy import so that we don't depend on tqdm.
             from tqdm.auto import tqdm
 
             indices = tqdm(indices)
 
+        I = 0
         for i in indices:
+            if 249-i < I: continue
             t = th.tensor([i] * shape[0], device=device)
+            if self.register_store['use_parallel']:
+                se_index = self.register_store['key_time_steps'].index(249-i)
+                tstep_s, tstep_e = self.register_store['key_time_steps'][se_index:se_index+2]
+                self.register_store['steps'] = self.timestep_map[::-1][tstep_s:tstep_e].copy()
+                self.register_store['indexs'] = [self.num_timesteps - x - 1 for x in range(tstep_s, tstep_e)]
+                I += (tstep_e-tstep_s)
+            else:
+                I += 1
+
             with th.no_grad():
+                if (249-i) not in self.register_store['key_time_steps']:  # TODO: for encoder shared
+                    self.register_store['se_step'] = True
                 out = self.p_sample(
                     model,
                     img,
@@ -507,6 +559,7 @@ class GaussianDiffusion:
                     cond_fn=cond_fn,
                     model_kwargs=model_kwargs,
                 )
+                self.register_store['se_step'] = False
                 yield out
                 img = out["sample"]
 
