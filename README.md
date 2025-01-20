@@ -9,7 +9,7 @@
 The official codebase for [FasterDiffusion](https://arxiv.org/abs/2312.09608) accelerates [DiT](https://github.com/facebookresearch/DiT) with **~1.51x** speedup.
 
 
-![DiT samples](visuals/infer_dit.png)
+![DiT samples](visuals/infer_dit.jpg)
 
 Results of DiT (top) and this method in conjunction with our proposed approach (bottom).
 
