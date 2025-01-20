@@ -51,7 +51,7 @@ key time-steps = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 
 Warming up GPU...
 100%|█████████████████████████████████████████| 250/250 [00:41<00:00,  6.09it/s]
 100%|█████████████████████████████████████████| 250/250 [00:40<00:00,  6.16it/s]
-DiT: 5.10 seconds/image
+DiT: 5.11 seconds/image
 ```
 
 ### Run the `sample_fasterdiffusion.py` to generate images with FasterDiffusion.
