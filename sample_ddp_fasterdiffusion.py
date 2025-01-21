@@ -90,8 +90,7 @@ def main(args):
                                 'bs': args.per_proc_batch_size, 'tqdm_disable': False, 'noise_injection': True}
 
     diffusion.register_store['key_time_steps'] = \
-        list(set(diffusion.register_store['key_time_steps']) - set([i for i in range(1, 230) if i % 10 < 5]))
-        # list(set(diffusion.register_store['key_time_steps']) - set([i for i in range(1, 249) if i % 15 < 10]))
+        list(set(diffusion.register_store['key_time_steps']) - set([i for i in range(1, 230) if i % 10 < 6]))
 
     # DiT w/o fasterdiffusion
     if args.only_DiT:
