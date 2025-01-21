@@ -45,7 +45,7 @@ conda activate DiT-FasterDiffusion
 
 ## Sampling
 
-### Run the `sample_fasterdiffusion.py` to generate images.
+### Run the `sample_fasterdiffusion.py` to generate images for DiT.
 ```bash
 python sample_fasterdiffusion.py --only-DiT 1 
 ```
@@ -65,7 +65,7 @@ DiT: 5.11 seconds/image
 
 ![DiT samples](visuals/infer_dit.png)
 
-### Run the `sample_fasterdiffusion.py` to generate images with FasterDiffusion.
+### Run the `sample_fasterdiffusion.py` to generate images for DiT with FasterDiffusion.
 ```bash
 python sample_fasterdiffusion.py 
 ```
