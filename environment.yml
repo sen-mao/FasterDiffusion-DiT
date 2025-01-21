@@ -17,3 +17,4 @@ dependencies:
     - mpi4py-mpich
     - protobuf==3.20.0
     - tensorflow-gpu==2.2.0
+    - pillow==9.0.0
