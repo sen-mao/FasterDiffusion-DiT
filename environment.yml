@@ -11,6 +11,7 @@ dependencies:
     - timm
     - diffusers==0.27.2
     - accelerate
+    - numpy==1.20.0
     # guided-diffusion and evaluations
     - -e git+https://github.com/openai/guided-diffusion.git#egg=guided_diffusion
     - mpi4py-mpich
