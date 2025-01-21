@@ -143,3 +143,6 @@ python evaluations/evaluator.py evaluations/VIRTUAL_imagenet256_labeled.npz samp
 
 ## Acknowledgments
 This codebase is built based on original [DiT](https://github.com/facebookresearch/DiT), and reference [MDT](https://github.com/sail-sg/MDT/tree/main) code. Thanks very much.
+
+### Contact
+If you have any questions, please feel free to reach out to me at  `senmaonk@gmail.com`. 
