@@ -43,7 +43,7 @@ conda activate DiT-FasterDiffusion
 | [XL/2-G](https://dl.fbaipublicfiles.com/DiT/models/DiT-XL-2-256x256.pt) (FasterDiffusion) |  256x256   |   2.31    |    4.55    |  276.05  |      0.82       |     0.57     |     3.26      |
 
 
-# Sampling
+## Sampling
 
 ### Run the `sample_fasterdiffusion.py` to generate images.
 ```bash
@@ -85,7 +85,7 @@ DiT (FasterDiffusion): 3.29 seconds/image
 
 ![DiT_FasterDiffusion samples](visuals/infer_dit_fasterdiffusion.png)
 
-# Evaluation
+## Evaluation
 DiT provides a script for evaluation [sample_ddp.py](https://github.com/facebookresearch/DiT/blob/main/sample_ddp.py).
 The evaluation code is modified from this code, and the 50k sampling results are saved in the same data format as [ADM](https://github.com/openai/guided-diffusion/blob/main/scripts/classifier_sample.py).
 The evaluation code is obtained from [ADM's TensorFlow evaluation suite](https://github.com/openai/guided-diffusion/tree/main/evaluations), and the evaluation environment is already included in the DiT-FasterDiffusion environment.
