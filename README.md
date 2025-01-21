@@ -1,16 +1,21 @@
-## Faster Diffusion: Rethinking the Role of UNet Encoder in Diffusion Models
+## Official Implementations "Faster Diffusion: Rethinking the Role of UNet Encoder in Diffusion Models" for DiT (NeurIPS'24)
 
 [![arXiv](https://img.shields.io/badge/arXiv-FasterDiffusion-<COLOR>.svg)](https://arxiv.org/abs/2312.09608) [![arXiv](https://img.shields.io/badge/paper-FasterDiffusion-b31b1b.svg)](https://arxiv.org/abs/2312.09608.pdf)
-> **Faster Diffusion: Rethinking the Role of UNet Encoder in Diffusion Models**
->
-> [Senmao Li](https://github.com/sen-mao), [Taihang Hu](https://github.com/hutaiHang), [Joost van de Weijer](https://scholar.google.com/citations?user=Gsw2iUEAAAAJ&hl=en&oi=sra), [Fahad Khan](https://sites.google.com/view/fahadkhans/home), [Tao Liu](ltolcy0@gmail.com), [Linxuan Li](https://github.com/Potato-lover), [Shiqi Yang](https://www.shiqiyang.xyz/), [Yaxing Wang](https://yaxingwang.netlify.app/author/yaxing-wang/), [Ming-Ming Cheng](https://mmcheng.net/), [Jian Yang](https://scholar.google.com.hk/citations?user=6CIDtZQAAAAJ&hl=en)
 
-The official codebase for [FasterDiffusion](https://arxiv.org/abs/2312.09608) accelerates [DiT](https://github.com/facebookresearch/DiT) with **~1.51x** speedup.
+[//]: # (> **Faster Diffusion: Rethinking the Role of UNet Encoder in Diffusion Models**)
 
+[//]: # (>)
 
-![DiT samples](visuals/infer_dit.jpg)
+[//]: # (> [Senmao Li]&#40;https://github.com/sen-mao&#41;, [Taihang Hu]&#40;https://github.com/hutaiHang&#41;, [Joost van de Weijer]&#40;https://scholar.google.com/citations?user=Gsw2iUEAAAAJ&hl=en&oi=sra&#41;, [Fahad Khan]&#40;https://sites.google.com/view/fahadkhans/home&#41;, [Tao Liu]&#40;ltolcy0@gmail.com&#41;, [Linxuan Li]&#40;https://github.com/Potato-lover&#41;, [Shiqi Yang]&#40;https://www.shiqiyang.xyz/&#41;, [Yaxing Wang]&#40;https://yaxingwang.netlify.app/author/yaxing-wang/&#41;, [Ming-Ming Cheng]&#40;https://mmcheng.net/&#41;, [Jian Yang]&#40;https://scholar.google.com.hk/citations?user=6CIDtZQAAAAJ&hl=en&#41;)
 
-Results of DiT (top) and this method in conjunction with our proposed approach (bottom).
+[//]: # (The official codebase for [FasterDiffusion]&#40;https://arxiv.org/abs/2312.09608&#41; accelerates [DiT]&#40;https://github.com/facebookresearch/DiT&#41; with **~1.51x** speedup.)
+
+[//]: # ()
+[//]: # ()
+[//]: # (![DiT samples]&#40;visuals/infer_dit.jpg&#41;)
+
+[//]: # ()
+[//]: # (Results of DiT &#40;top&#41; and this method in conjunction with our proposed approach &#40;bottom&#41;.)
 
 ## Requirements
 
@@ -58,6 +63,8 @@ DiT: 5.11 seconds/image
 
 </details>
 
+![DiT samples](visuals/infer_dit.png)
+
 ### Run the `sample_fasterdiffusion.py` to generate images with FasterDiffusion.
 ```bash
 python sample_fasterdiffusion.py 
@@ -75,6 +82,8 @@ DiT (FasterDiffusion): 3.29 seconds/image
 ```
 
 </details>
+
+![DiT_FasterDiffusion samples](visuals/infer_dit_fasterdiffusion.png)
 
 # Evaluation
 DiT provides a script for evaluation [sample_ddp.py](https://github.com/facebookresearch/DiT/blob/main/sample_ddp.py).
