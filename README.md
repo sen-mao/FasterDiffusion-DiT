@@ -17,7 +17,10 @@
 [//]: # ()
 [//]: # (Results of DiT &#40;top&#41; and this method in conjunction with our proposed approach &#40;bottom&#41;.)
 
-![example](visuals/example.gif)
+<div align="center">
+  <img src="visuals/example.gif" width="100%" ></img>
+</div>
+<br>
 
 ## Requirements
 
