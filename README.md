@@ -19,6 +19,7 @@
 
 <div align="center">
   <img src="visuals/example.gif" width="100%" ></img>
+  <br>
 </div>
 <br>
 
