@@ -91,6 +91,7 @@ The evaluation code is modified from this code, and the 50k sampling results are
 The evaluation code is obtained from [ADM's TensorFlow evaluation suite](https://github.com/openai/guided-diffusion/tree/main/evaluations), and the evaluation environment is already included in the DiT-FasterDiffusion environment.
 
 
+- DiT-XL/2-G (cfg=1.50)
 
 ```bash
 #!/bin/bash
