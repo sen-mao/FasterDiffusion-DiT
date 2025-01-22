@@ -17,11 +17,7 @@
 [//]: # ()
 [//]: # (Results of DiT &#40;top&#41; and this method in conjunction with our proposed approach &#40;bottom&#41;.)
 
-<div align="center">
-  <img src="https://github.com/sen-mao/DiT-FasterDiffusion/visuals/example.gif" width="100%" ></img>
-  <br>
-</div>
-<br>
+![example](visuals/example.gif)
 
 ## Requirements
 
