@@ -92,6 +92,8 @@ def main(args):
     diffusion.register_store['key_time_steps'] = \
         list(set(diffusion.register_store['key_time_steps']) - set([i for i in range(1, 230) if i % 10 < 6]))
 
+    print('key time-steps =', diffusion.register_store['key_time_steps'])
+
     # DiT w/o fasterdiffusion
     if args.only_DiT:
         diffusion.register_store['key_time_steps'] = list(range(args.num_sampling_steps+1))
