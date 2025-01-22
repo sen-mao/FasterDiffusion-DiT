@@ -17,6 +17,8 @@
 [//]: # ()
 [//]: # (Results of DiT &#40;top&#41; and this method in conjunction with our proposed approach &#40;bottom&#41;.)
 
+![example](visuals/example.gif)
+
 ## Requirements
 
 First, download and set up the repo:
@@ -124,7 +126,75 @@ python evaluations/evaluator.py evaluations/VIRTUAL_imagenet256_labeled.npz samp
 # Recall: 0.5764
 ```
 
+- DiT-XL/2-G (cfg=1.25)
 
+<details>
+<summary>Output:</summary>
+
+```bash
+#!/bin/bash
+
+export NCCL_P2P_DISABLE=1
+
+NUM_GPUS=8
+BATCH_SIZE=32
+
+echo 'DiT:'
+export CFG_SCALE=1.25
+MODEL_FLAGS="--model DiT-XL/2 --per-proc-batch-size 64 --num-fid-samples 50000 --image-size 256 --only-DiT True"
+torchrun --nnodes=1 --nproc_per_node=$NUM_GPUS sample_ddp_fasterdiffusion.py  $MODEL_FLAGS --cfg-scale $CFG_SCALE
+python evaluations/evaluator.py evaluations/VIRTUAL_imagenet256_labeled.npz samples/DiT-XL-2-samples-50000.npz
+# Inception Score: 200.91566467285156
+# FID: 3.2465643497795327
+# sFID: 5.309920796937604
+# Precision: 0.76142
+# Recall: 0.635
+
+
+echo 'DiT (FasterDiffusion):'
+export CFG_SCALE=1.25
+MODEL_FLAGS="--model DiT-XL/2 --num-fid-samples 50000 --image-size 256 --only-DiT False"
+torchrun --nnodes=1 --nproc_per_node=$NUM_GPUS sample_ddp_fasterdiffusion.py $MODEL_FLAGS --cfg-scale $CFG_SCALE --per-proc-batch-size $BATCH_SIZE
+python evaluations/evaluator.py evaluations/VIRTUAL_imagenet256_labeled.npz samples/DiT-XL-2-samples-50000.npz
+# Inception Score: 
+```
+
+</details>
+
+
+- DiT-XL/2
+
+<details>
+<summary>Output:</summary>
+
+```bash
+#!/bin/bash
+
+export NCCL_P2P_DISABLE=1
+
+NUM_GPUS=8
+BATCH_SIZE=32
+
+echo 'DiT:'
+export CFG_SCALE=1.0
+MODEL_FLAGS="--model DiT-XL/2 --per-proc-batch-size 64 --num-fid-samples 50000 --image-size 256 --only-DiT True"
+torchrun --nnodes=1 --nproc_per_node=$NUM_GPUS sample_ddp_fasterdiffusion.py  $MODEL_FLAGS --cfg-scale $CFG_SCALE
+python evaluations/evaluator.py evaluations/VIRTUAL_imagenet256_labeled.npz samples/DiT-XL-2-samples-50000.npz
+# Inception Score: 122.8410415649414
+# FID: 9.540725948224122
+# sFID: 6.877126836603679
+# Precision: 0.66544
+# Recall: 0.6763
+
+echo 'DiT (FasterDiffusion):'
+export CFG_SCALE=1.0
+MODEL_FLAGS="--model DiT-XL/2 --num-fid-samples 50000 --image-size 256 --only-DiT False"
+torchrun --nnodes=1 --nproc_per_node=$NUM_GPUS sample_ddp_fasterdiffusion.py $MODEL_FLAGS --cfg-scale $CFG_SCALE --per-proc-batch-size $BATCH_SIZE
+python evaluations/evaluator.py evaluations/VIRTUAL_imagenet256_labeled.npz samples/DiT-XL-2-samples-50000.npz
+# Inception Score: 
+```
+
+</details>
 
 
 ## BibTeX
