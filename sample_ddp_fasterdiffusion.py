@@ -86,11 +86,11 @@ def main(args):
     ## For fasterdiffusion
     diffusion.register_store = {'se_step': False, 'mid_feature': None,
                                 'key_time_steps': list(range(args.num_sampling_steps + 1)),
-                                'init_img': None, 'use_parallel': True, 'ts_parallel': None, 'steps': [0],
+                                'init_img': None, 'use_parallel': False, 'ts_parallel': None, 'steps': [0],
                                 'bs': args.per_proc_batch_size, 'tqdm_disable': False, 'noise_injection': True}
 
     diffusion.register_store['key_time_steps'] = \
-        list(set(diffusion.register_store['key_time_steps']) - set([i for i in range(1, 230) if i % 10 < 6]))
+        list(set(diffusion.register_store['key_time_steps']) - set([i for i in range(1, 230) if i % 10 < 5]))
 
     print('key time-steps =', diffusion.register_store['key_time_steps'])
 
