@@ -116,7 +116,7 @@ python evaluations/evaluator.py evaluations/VIRTUAL_imagenet256_labeled.npz samp
 
 echo 'DiT (FasterDiffusion):'
 export CFG_SCALE=1.5
-MODEL_FLAGS="--model DiT-XL/2 --num-fid-samples 50000 --image-size 256 --only-DiT False"
+MODEL_FLAGS="--model DiT-XL/2 --num-fid-samples 50000 --image-size 256"
 torchrun --nnodes=1 --nproc_per_node=$NUM_GPUS sample_ddp_fasterdiffusion.py $MODEL_FLAGS --cfg-scale $CFG_SCALE --per-proc-batch-size $BATCH_SIZE
 python evaluations/evaluator.py evaluations/VIRTUAL_imagenet256_labeled.npz samples/DiT-XL-2-samples-50000.npz
 # Inception Score: 276.0558166503906
@@ -125,7 +125,6 @@ python evaluations/evaluator.py evaluations/VIRTUAL_imagenet256_labeled.npz samp
 # Precision: 0.82654
 # Recall: 0.5764
 ```
-
 
 
 ## BibTeX
