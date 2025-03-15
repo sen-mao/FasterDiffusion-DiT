@@ -1,4 +1,4 @@
-## Official Implementations "Faster Diffusion: Rethinking the Role of UNet Encoder in Diffusion Models" for DiT (NeurIPS'24)
+## Official Implementations "Faster Diffusion: Rethinking the Role of the Encoder for Diffusion Model Inference" for DiT (NeurIPS'24)
 
 [![arXiv](https://img.shields.io/badge/arXiv-FasterDiffusion-<COLOR>.svg)](https://arxiv.org/abs/2312.09608) [![arXiv](https://img.shields.io/badge/paper-FasterDiffusion-b31b1b.svg)](https://arxiv.org/abs/2312.09608.pdf) ![Visitors](https://visitor-badge.laobi.icu/badge?page_id=sen-mao/DiT-FasterDiffusion)
 
