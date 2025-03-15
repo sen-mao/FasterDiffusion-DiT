@@ -2,20 +2,6 @@
 
 [![arXiv](https://img.shields.io/badge/arXiv-FasterDiffusion-<COLOR>.svg)](https://arxiv.org/abs/2312.09608) [![arXiv](https://img.shields.io/badge/paper-FasterDiffusion-b31b1b.svg)](https://arxiv.org/abs/2312.09608.pdf) ![Visitors](https://visitor-badge.laobi.icu/badge?page_id=sen-mao/DiT-FasterDiffusion)
 
-[//]: # (> **Faster Diffusion: Rethinking the Role of UNet Encoder in Diffusion Models**)
-
-[//]: # (>)
-
-[//]: # (> [Senmao Li]&#40;https://github.com/sen-mao&#41;, [Taihang Hu]&#40;https://github.com/hutaiHang&#41;, [Joost van de Weijer]&#40;https://scholar.google.com/citations?user=Gsw2iUEAAAAJ&hl=en&oi=sra&#41;, [Fahad Khan]&#40;https://sites.google.com/view/fahadkhans/home&#41;, [Tao Liu]&#40;ltolcy0@gmail.com&#41;, [Linxuan Li]&#40;https://github.com/Potato-lover&#41;, [Shiqi Yang]&#40;https://www.shiqiyang.xyz/&#41;, [Yaxing Wang]&#40;https://yaxingwang.netlify.app/author/yaxing-wang/&#41;, [Ming-Ming Cheng]&#40;https://mmcheng.net/&#41;, [Jian Yang]&#40;https://scholar.google.com.hk/citations?user=6CIDtZQAAAAJ&hl=en&#41;)
-
-[//]: # (The official codebase for [FasterDiffusion]&#40;https://arxiv.org/abs/2312.09608&#41; accelerates [DiT]&#40;https://github.com/facebookresearch/DiT&#41; with **~1.51x** speedup.)
-
-[//]: # ()
-[//]: # ()
-[//]: # (![DiT samples]&#40;visuals/infer_dit.jpg&#41;)
-
-[//]: # ()
-[//]: # (Results of DiT &#40;top&#41; and this method in conjunction with our proposed approach &#40;bottom&#41;.)
 
 ![example](visuals/example.gif)
 
@@ -130,11 +116,13 @@ python evaluations/evaluator.py evaluations/VIRTUAL_imagenet256_labeled.npz samp
 ## BibTeX
 
 ```bibtex
-@inproceedings{li2023faster,
+@article{li2024faster,
   title={Faster diffusion: Rethinking the role of the encoder for diffusion model inference},
-  author={Li, Senmao and van de Weijer, Joost and Khan, Fahad and Liu, Tao and Li, Linxuan and Yang, Shiqi and Wang, Yaxing and Cheng, Ming-Ming and others},
-  booktitle={The Thirty-eighth Annual Conference on Neural Information Processing Systems},
-  year={2023}
+  author={Li, Senmao and Hu, Taihang and van de Weijer, Joost and Shahbaz Khan, Fahad and Liu, Tao and Li, Linxuan and Yang, Shiqi and Wang, Yaxing and Cheng, Ming-Ming and others},
+  journal={Advances in Neural Information Processing Systems},
+  volume={37},
+  pages={85203--85240},
+  year={2024}
 }
 
 @article{Peebles2022DiT,
