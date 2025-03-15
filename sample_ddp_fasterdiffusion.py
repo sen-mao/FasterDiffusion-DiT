@@ -99,7 +99,7 @@ def main(args):
          213, 214, 215, 216, 217, 218, 219, 221, 224, 225, 226, 227, 228, 229, 230, 231, 232, 234, 236, 237, 238, 240,
          242, 243, 244, 245, 246, 247, 248, 249, 250]
 
-    print('key time-steps =', diffusion.register_store['key_time_steps'])
+    print('key time-steps = ', diffusion.register_store['key_time_steps'])
 
     # DiT w/o fasterdiffusion
     if args.only_DiT:
