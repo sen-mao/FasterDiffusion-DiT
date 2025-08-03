@@ -41,7 +41,7 @@ def main(args):
     model.load_state_dict(state_dict)
     model.eval()  # important!
     diffusion = create_diffusion(str(args.num_sampling_steps))
-    vae = AutoencoderKL.from_pretrained(f"stabilityai/sd-vae-ft-{args.vae}").to(device)
+    vae = AutoencoderKL.from_pretrained(f"/data/stabilityai/sd-vae-ft-{args.vae}").to(device)
 
     # Labels to condition the model with (feel free to change):
     class_labels = [207, 360, 387, 974, 88, 979, 417, 279]
@@ -49,21 +49,29 @@ def main(args):
     ## For fasterdiffusion
     diffusion.register_store = {'se_step': False, 'mid_feature': None,
                                 'key_time_steps': list(range(args.num_sampling_steps+1)),
-                                'init_img': None, 'use_parallel': False, 'ts_parallel': None, 'steps': [0],
+                                'init_img': None, 'use_parallel': True, 'ts_parallel': None, 'steps': [0],
                                 'bs': len(class_labels), 'tqdm_disable': False, 'noise_injection': True}
 
     diffusion.register_store['key_time_steps'] = \
-        list(set(diffusion.register_store['key_time_steps']) - set([i for i in range(1, 230) if i % 10 < 6]))
+        [0, 1, 2, 3, 4, 5, 6, 10, 12, 13, 14, 16, 17, 18, 19, 20, 22, 25, 27, 29, 30, 31, 32, 33, 34, 35, 36, 37, 45, 49,
+         51, 52, 53, 54, 58, 59, 60, 62, 64, 67, 68, 70, 72, 73, 75, 77, 78, 81, 82, 83, 84, 85, 86, 87, 88, 90, 91, 92,
+         95, 97, 99, 101, 102, 103, 104, 106, 107, 109, 110, 111, 112, 115, 116, 117, 118, 119, 120, 121, 123, 125, 128,
+         130, 131, 132, 134, 137, 138, 139, 141, 142, 143, 144, 145, 147, 150, 152, 155, 157, 158, 160, 161, 162, 163,
+         164, 166, 168, 169, 170, 172, 173, 174, 175, 178, 180, 181, 182, 184, 187, 188, 189, 190, 191, 193, 194, 195,
+         196, 198, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 212, 213, 214, 216, 217, 218, 219, 221, 223,
+         224, 225, 226, 227, 228, 229, 231, 232, 233, 234, 237, 239, 241, 242, 243, 245, 246, 247, 249, 250]
+        # list(set(diffusion.register_store['key_time_steps']) - set([i for i in range(1, 230) if i % 10 < 4]))
 
     # DiT w/o fasterdiffusion
     if args.only_DiT:
         diffusion.register_store['key_time_steps'] = list(range(args.num_sampling_steps+1))
 
     print('key time-steps =', diffusion.register_store['key_time_steps'])
+    print(len(diffusion.register_store['key_time_steps']))
 
     # Create sampling noise:
     n = len(class_labels)
-    torch.manual_seed(3407)
+    torch.manual_seed(args.seed)
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
     z = torch.randn(n, 4, latent_size, latent_size, device=device)
